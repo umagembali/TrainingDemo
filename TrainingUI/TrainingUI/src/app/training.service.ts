@@ -19,8 +19,8 @@ export class TrainingService {
     parameters = parameters.append("startDate", startDate.toString());
     parameters = parameters.append("endDate", endDate.toString());
     
-    //let headerValues: HttpHeaders = new HttpHeaders();
-    //headerValues = headerValues.append("Access-Control-Allow-Origin", "*");
+    let headerValues: HttpHeaders = new HttpHeaders();
+    headerValues = headerValues.append("Access-Control-Allow-Origin", "*");
     //headerValues = headerValues.append("Access-Control-Allow-Methods", "POST");
     //headerValues = headerValues.append("Access-Control-Allow-Headers", "accept, content-type");
     //headerValues = headerValues.append("Access-Control-Max-Age", "1728000");
@@ -28,8 +28,8 @@ export class TrainingService {
     let message: string;
     message = ""; 
 
-    //this.http.post(this.url, requestbody, { headers: headerValues, params: parameters })
-    this.http.post(this.url, requestbody, { params: parameters })
+    this.http.post(this.url, requestbody, { headers: headerValues, params: parameters })
+    //this.http.post(this.url, requestbody, { params: parameters })
       .subscribe(
         (data) => {
           alert("service call completed");
