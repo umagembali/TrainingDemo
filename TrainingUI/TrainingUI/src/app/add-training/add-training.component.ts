@@ -14,6 +14,9 @@ export class AddTrainingComponent implements OnInit {
   angForm: FormGroup;
   ErrorMessage: string;
   InformationMessage: string;
+  TrainingNameErrorMessage: string;
+  StartDateErrorMessage: string;
+  EndDateErrorMessage: string;
   constructor(private fb: FormBuilder, private ps: TrainingService) {
     this.CreateForm();
   }
@@ -25,9 +28,15 @@ export class AddTrainingComponent implements OnInit {
       EndDate: ['', Validators.required]
     });
     this.InformationMessage = "";
+    this.ErrorMessage = "";
+    this.StartDateErrorMessage = "";
+    this.EndDateErrorMessage = "";
+    this.TrainingNameErrorMessage = "";
   }
 
   addTrainingRecord(trainingName, inputStartDate, inputEndDate) {
+    this.ErrorMessage = "";
+    this.InformationMessage = "";
     var startDate = new Date(inputStartDate);
     var endDate = new Date(inputEndDate);
 
@@ -51,29 +60,45 @@ export class AddTrainingComponent implements OnInit {
   }
 
   validateTrainingName(inputName) {
-    this.ErrorMessage = "";
+    this.TrainingNameErrorMessage = "";
     var rxSpacePattern = /^( )*$/;
-    if (inputName.match(rxSpacePattern) != null) {
-      this.ErrorMessage = "Training name can't be empty.";
+    if (inputName.match(rxSpacePattern) != null || inputName.Lengh==0) {
+      this.TrainingNameErrorMessage = "Training name can't be empty.";
+      return false;
     }
-    //else {
-    //  var rxDigitPattern = /^(\d)+$/;
-    //  var rxAlphabetPattern = /^(\w)+$/;
-    //  //var inputDigitArray = inputName.match(rxDigitPattern);
-    //  //var inputAlphabetArray = inputName.match(rxAlphabetPattern);
-    //  //if (inputDigitArray == null && inputAlphabetArray == null) {
-    //  //  this.ErrorMessage = "Training name can't contain only special characters.";
-    //  //}
-    //  if ((inputName.search(rxDigitPattern) == -1) && (inputName.search(rxAlphabetPattern) == -1)) {
-    //    this.ErrorMessage = "Training name can't contain only special characters.";
-    //  }
-    //}
+    var pattern = /[A-Za-z0-9]/gi;
+    if (!(inputName.search(pattern) > 0)) {
+      this.TrainingNameErrorMessage = "Training name can't have all special characters";
+      return false;
+    }
   }
 
   isValidDate(inputDate) {
     var currVal = inputDate;
     if (currVal == '')
       return false;
+
+    var date = new Date();
+    var year = date.getFullYear().toString();
+
+    var month = (date.getMonth() + 1);
+    var stringMonth;
+    if (month < 10)
+      stringMonth = '0' + date.getMonth().toString()
+    else
+      stringMonth = date.getMonth().toString()
+
+    var day;
+    if (date.getDate() < 10)
+      day = '0' + date.getDate().toString()
+    else
+      day = date.getDate().toString()
+
+    var today = year + '-' + stringMonth + '-' + day;
+
+    if (currVal < today) {
+      return false;
+    }
 
     var rxDatePattern = /^(\d{4})(\/|-)(\d{1,2})(\/|-)(\d{1,2})$/;
     var dtArray = currVal.match(rxDatePattern);
@@ -99,11 +124,26 @@ export class AddTrainingComponent implements OnInit {
     return true;
   }
 
-  validateDate(inputDate) {
+  validateStartDate(inputDate) {
+    this.StartDateErrorMessage = "";
     if (this.isValidDate(inputDate)) {
+      this.StartDateErrorMessage = "";
       return true;
     }
     else {
+      this.StartDateErrorMessage = "Either start date entered is invalid or past date.";
+      return false;
+    }
+  }
+
+  validateEndDate(inputDate) {
+    this.EndDateErrorMessage = "";
+    if (this.isValidDate(inputDate)) {
+      this.EndDateErrorMessage = "";
+      return true;
+    }
+    else {
+      this.EndDateErrorMessage = "Either end date entered is invalid or past date.";
       return false;
     }
   }
