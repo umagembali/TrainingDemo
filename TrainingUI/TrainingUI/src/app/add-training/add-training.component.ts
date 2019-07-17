@@ -67,7 +67,7 @@ export class AddTrainingComponent implements OnInit {
       return false;
     }
     var pattern = /[A-Za-z0-9]/gi;
-    if (!(inputName.search(pattern) > 0)) {
+    if (!(inputName.search(pattern) > -1)) {
       this.TrainingNameErrorMessage = "Training name can't have all special characters";
       return false;
     }
